@@ -6,7 +6,7 @@
 
 ### Enjoy your Open-source Premiumness!
 
-**An unofficial YouTube Music client for Windows, macOS and Linux:** ad-free, gapless and synced to your lyrics. It keeps playing when you close the window.
+**A YouTube Music client for Windows, macOS and Linux:** ad-free, gapless and synced to your lyrics. It keeps playing when you close the window.
 
 <p>
   <img alt="Windows" src="https://img.shields.io/badge/Windows-10%20%7C%2011-1d1d25?style=flat-square&logo=windows&logoColor=f58247">
