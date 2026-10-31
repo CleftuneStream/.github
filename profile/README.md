@@ -25,7 +25,7 @@ An open source privacy-conscious YouTube Music client for **Windows, macOS, and 
 > [!NOTE]
 > ClefTune is an open source project. It is **not affiliated with YouTube, Google, or Any third-party applications**. ClefTune communicates with YouTube's internal APIs. YouTube's Terms of Service do not allow this, so use ClefTune for personal listening at your own risk.
 
-## ✨ Why ClefTune?
+## 🤔 Why ClefTune?
 
 ClefTune is built for people who want a focused music player instead of another browser tab:
 
@@ -78,7 +78,7 @@ Downloaded music in `Music/ClefTune` is never removed automatically.
 | **Account** _(optional)_ | YouTube Music likes, playlists, and history with two-way like synchronization                                                   |
 | **Desktop integration**  | Media keys, Linux MPRIS, tray icon, album-art colors, and dark/light/system themes                                              |
 
-### Player behavior
+### 🤾🏻‍♂️ Player behavior
 
 | Action                                          | Result                          |
 | ----------------------------------------------- | ------------------------------- |
@@ -89,7 +89,7 @@ Downloaded music in `Music/ClefTune` is never removed automatically.
 | Close the window or browser tab                 | Keep playback running           |
 | Select **Quit** in the sidebar or tray menu     | Stop ClefTune completely        |
 
-## 🔐 Signing in (optional)
+## 🔐 Signing in (for better recommendations)
 
 Open **Settings → Account** and choose **Sign in with Google · via your browser**.
 
@@ -115,78 +115,11 @@ Using a real browser avoids Google's “unsafe browser” restriction. You can c
 | <kbd>Q</kbd> / <kbd>Y</kbd> | Queue / lyrics panel | <kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>F</kbd> | Search            |
 | <kbd>M</kbd>                | Mute                 | <kbd>Esc</kbd>                                 | Leave Now Playing |
 
-## 🧩 Architecture
-
-ClefTune is split into a Python core and a lightweight web interface:
-
-- **Core:** runs in the background and handles stream resolution, audio decoding, playback, queue management, library data, account features, and lyrics.
-- **Interface:** plain HTML, CSS, and JavaScript with no framework or build step. It can run in the optional native window or any browser.
-- **Communication:** the interface talks to the core through authenticated JSON RPC, Server-Sent Events, and a local audio relay.
-
-```mermaid
-flowchart LR
-    subgraph UI["Interface · HTML/CSS/JS"]
-        W["Native window<br/>Qt WebEngine · WebView2 · WKWebView"]
-        B["Any web browser"]
-    end
-    subgraph Core["ClefTune core · Python"]
-        S["server.py<br/>RPC · events · audio relay"]
-        P["player.py<br/>queue · playback"]
-        E["engines/<br/>FFmpeg + miniaudio"]
-        R["streams.py<br/>yt-dlp · prefetch"]
-        Y["ytm.py<br/>ytmusicapi"]
-        L["lyrics.py"]
-        D[("library.db<br/>SQLite")]
-    end
-    YT(["YouTube Music"])
-    LR(["LRCLIB · KuGou"])
-
-    W & B -- "JSON RPC + SSE<br/>127.0.0.1 · per-launch token" --> S
-    S --> P --> E
-    E -- "/api/stream" --> S
-    S --> R --> YT
-    S --> Y --> YT
-    S --> L --> LR
-    P --> D
-```
-
-<details>
-<summary><b>Module map</b></summary>
-
-| Module                           | Responsibility                                                                               |
-| -------------------------------- | -------------------------------------------------------------------------------------------- |
-| `app.py`                         | Service wiring, audio-engine selection, window/browser startup, and single-instance handling |
-| `server.py`                      | Loopback HTTP server, UI files, RPC, events, and range-enabled audio relay                   |
-| `api.py`                         | RPC methods for browsing, playback, library, account, and settings                           |
-| `player.py`                      | Queue, shuffle, repeat, autoplay radio, sleep timer, session restore, and prefetch           |
-| `engines/`                       | Native PyAV/FFmpeg + miniaudio engine, system libmpv engine, and browser `<audio>` fallback  |
-| `streams.py`                     | YouTube audio URL resolution, fast path, fallback flow, prefetch, and URL memory             |
-| `ytm.py`                         | `ytmusicapi` wrapper for home, search, albums, artists, playlists, radio, and account data   |
-| `auth.py`                        | Browser-based YouTube authentication and request-header handling                             |
-| `lyrics.py`                      | Lyrics providers, LRC parsing, word timing, and offline copies                               |
-| `library.py`                     | SQLite storage for likes, playlists, history, downloads, and statistics                      |
-| `song_cache.py` / `downloads.py` | Recent-song cache and permanent tagged downloads                                             |
-| `engine_update.py`               | Checksum-verified yt-dlp updates when YouTube changes                                        |
-| `mpris.py`                       | Linux media controls and desktop media widgets over D-Bus                                    |
-| `viewer.py`                      | Native window wrapper and tray integration                                                   |
-| `web/`                           | The complete frontend: `index.html`, `app.js`, and `app.css`                                 |
-
-</details>
-
-### Security and privacy
-
-- The local server listens on `127.0.0.1` only.
-- Every request requires a random token generated for that launch.
-- Foreign `Host` headers are rejected.
-- YouTube-provided text is inserted as plain text rather than executable markup.
-- Account data and library files remain on your computer.
-
 ## 🛠 Troubleshooting
 
 ### Songs stop loading
 
 YouTube changes its delivery systems regularly. Open **Settings → About → Update YouTube engine**.
-
 ClefTune downloads the newest yt-dlp release, verifies its SHA-256 checksum, tests the import, and applies it after restart. **Use bundled engine** returns to the packaged version.
 
 ## 📂 Data locations
@@ -199,71 +132,6 @@ ClefTune downloads the newest yt-dlp release, verifies its SHA-256 checksum, tes
 | Downloads                | `Music\ClefTune`                   | `~/Music/ClefTune`                                       | `~/Music/ClefTune`        |
 
 Logs are stored as `cleftune.log` and `window.log` in the library folder.
-
-## 📦 Building the installers
-
-PyInstaller does not cross-compile, so build each installer on its target operating system.
-
-### Automated builds
-
-1. Bump the version in `cleftune/__init__.py` and `pyproject.toml`.
-2. Push the change.
-3. Run **Actions → Installers → Run workflow**, or push a tag such as `v1.2.0`.
-
-The workflow builds Windows, macOS (Apple Silicon and Intel), and Linux installers, creates the version tag and release, and uploads `SHA256SUMS.txt`. Re-running the same version and commit replaces the release files. Use **draft** to review before publishing.
-
-### Local builds
-
-Run these commands on the operating system you are targeting:
-
-```bash
-python -m pip install -r packaging/requirements-build.txt
-python packaging/build.py
-```
-
-Windows also requires Inno Setup 6. The output is written to `dist/installers/`.
-
-Additional build notes:
-
-- All icons are generated from `assets/clef.png`; replacing that file is enough for a rebrand.
-- Linux builds strip debug symbols and use xz compression.
-- macOS builds are ad-hoc signed by default.
-- For Developer ID signing, set `MACOS_SIGN_IDENTITY` and `MACOS_INSTALLER_IDENTITY`, then notarize the `.pkg`.
-- Windows builds are unsigned, so SmartScreen may show a warning on first launch.
-
-## 👩‍💻 Development
-
-```bash
-python -m venv .venv
-
-# macOS / Linux
-. .venv/bin/activate
-
-# Windows
-# .venv\Scripts\activate
-
-pip install -e ".[dev]"
-
-# Optional extras:
-# pip install -e ".[dev,window-qt]"  # Linux native window
-# pip install -e ".[dev,tray]"       # Windows tray support
-
-python -m cleftune
-pytest
-```
-
-Useful runtime options:
-
-```text
---browser             Open in a browser
---window              Open in the native window
---engine native       Use native audio playback
---engine mpv          Use system libmpv
---engine web          Use browser audio
---debug               Enable debug logging
-```
-
-The source installers are also available at `install/install.sh` and `install/install.ps1`. For most users, the packaged installers above are simpler.
 
 ## 📜 License and Credit Mentions
 
