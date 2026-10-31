@@ -36,7 +36,7 @@ ClefTune is built for people who want a focused music player instead of another 
 - **Optional account support**: sign in through your own browser when you want synced likes, playlists, or history.
 - **Desktop-native controls**: media keys, tray integration, themes, and Linux MPRIS support.
 
-## 📥 Installation
+## 🎼 Installation 
 
 Download the latest installer from the [Releases](https://github.com/ettisafxrup/ClefTune/releases) page.
 
@@ -97,13 +97,15 @@ Open **Settings → Account** and choose **Sign in with Google · via your brows
 2. Sign in as usual, or reuse an existing YouTube login.
 3. ClefTune detects the completed login automatically within a few seconds.
 
-Using a real browser avoids Google's “unsafe browser” restriction. You can choose Firefox, Chrome, Edge, Brave, Chromium, Opera, Vivaldi, Safari, or another installed browser. The **Advanced** option also accepts request headers copied from browser developer tools.
+You can choose Firefox, Chrome, Edge, Brave, Chromium, Opera, Vivaldi, Safari, or another installed browser. 
+The **Advanced** option also accepts request headers copied from browser developer tools.
 
-> [!TIP]
-> Login data is stored locally in `browser_auth.json` inside the library folder. Enable **Use account for playback** if you need age-restricted songs or Premium audio quality.
-
+<b>Additional Data:</b>
 > [!IMPORTANT]
 > Windows Chrome and Edge encrypt their cookies in a way that other apps cannot always read. If sign-in through either browser fails, try Firefox or the **Advanced** option.
+
+> [!TIP]
+> Login data is stored locally in `browser_auth.json` inside the library folder. Enable **Use account for playback** if you need age-restricted songs or Premium audio quality. But it might not work due to strict Youtube rules. 
 
 ## ⌨️ Keyboard shortcuts
 
@@ -117,12 +119,16 @@ Using a real browser avoids Google's “unsafe browser” restriction. You can c
 
 ## 🛠 Troubleshooting
 
-### Songs stop loading
-
+<details>
+<summary><b>What to do when Songs stop loading?</b></summary>
 YouTube changes its delivery systems regularly. Open **Settings → About → Update YouTube engine**.
 ClefTune downloads the newest yt-dlp release, verifies its SHA-256 checksum, tests the import, and applies it after restart. **Use bundled engine** returns to the packaged version.
+</details>
+
 
 ## 📂 Data locations
+
+This one is a little bit critical for non-tech users of Cleftune, but we are mentioning this for on our clarity.
 
 | Data                     | Windows                            | macOS                                                    | Linux                     |
 | ------------------------ | ---------------------------------- | -------------------------------------------------------- | ------------------------- |
