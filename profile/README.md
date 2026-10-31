@@ -121,9 +121,10 @@ The **Advanced** option also accepts request headers copied from browser develop
 
 <details>
 <summary><b>What to do when Songs stop loading?</b></summary>
-YouTube changes its delivery systems regularly. Open: 
-- Settings → About → Update YouTube engine
-ClefTune downloads the newest yt-dlp release, verifies its SHA-256 checksum, tests the import, and applies it after restart. **Use bundled engine** returns to the packaged version.
+  <br>
+YouTube changes its delivery systems regularly. Open: <br>
+- Settings → About → Update YouTube engine <br>
+ClefTune downloads the newest yt-dlp release, verifies its SHA-256 checksum, tests the import, and applies it after restart. Use bundled engine returns to the packaged version.
 </details>
 
 
